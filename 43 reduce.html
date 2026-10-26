@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <h2>Using Reduce() Method</h2>
+    <script>
+        let marks = [75, 80, 65, 90, 85];
+        let total = marks.reduce(function(sum, mark){
+            return sum + mark;
+        }, 0);
+
+        document.write("Marks: " + marks + "<br>");
+        document.write("Total Marks: "+ total);
+        
+    </script>
+</body>
+</html>
