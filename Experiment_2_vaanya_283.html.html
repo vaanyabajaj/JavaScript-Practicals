@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+
+        /* SOFT BREATHING BACKGROUND */
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #fdfbf7, #f4ebe1, #ecdcd1, #f9f3ee);
+            background-size: 400% 400%;
+            animation: softBreathe 15s ease infinite;
+            color: #4a403a;
+            padding: 20px;
+        }
+
+        @keyframes softBreathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* HIGHLIGHTED CARD */
+        .calculator-card {
+            background: #ffffff;
+            padding: 45px 40px;
+            border-radius: 24px;
+            /* Stronger shadow to make the card pop */
+            box-shadow: 0 15px 35px rgba(142, 115, 97, 0.15), 0 5px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 420px;
+            transform: translateY(0);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border: 1px solid rgba(209, 197, 190, 0.6); /* Defined border */
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(142, 115, 97, 0.2), 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 35px;
+            font-weight: 600; /* Made heading slightly bolder */
+            letter-spacing: 0.5px;
+            color: #8e7361; 
+            font-size: 1.8em;
+        }
+
+        /* HIGHLIGHTED INPUT FIELDS */
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85em;
+            color: #8e7361; /* Darker label for readability */
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #ffffff; /* Pure white to stand out */
+            border: 2px solid #e8dfd8; /* Thicker default border */
+            border-radius: 12px;
+            color: #4a403a;
+            font-size: 1.05em; /* Slightly larger text */
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); /* Slight inner depth */
+        }
+
+        /* Interactive Highlights (Hover & Focus) */
+        .input-group input:hover {
+            border-color: #d1c5be;
+            background: #faf8f5;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #c29b8c;
+            /* Glowing ring effect when clicked */
+            box-shadow: 0 0 0 4px rgba(194, 155, 140, 0.25), inset 0 2px 4px rgba(0,0,0,0.01);
+            transform: translateY(-1px);
+        }
+
+        .input-group input::placeholder {
+            color: #c8c0ba;
+            font-weight: 400;
+        }
+
+        /* HIGHLIGHTED BUTTON */
+        .btn-generate {
+            width: 100%;
+            background: #b88d7c; /* Slightly richer color */
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(184, 141, 124, 0.3);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            background: #a37968;
+            box-shadow: 0 12px 20px rgba(184, 141, 124, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(184, 141, 124, 0.3);
+        }
+
+        /* RECEIPT HIGHLIGHTS */
+        .receipt-box {
+            margin-top: 35px;
+            padding: 30px;
+            background: #ffffff;
+            border: 2px dashed #c29b8c; /* Clearer dashed border */
+            border-radius: 16px;
+            display: none;
+            animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 10px 25px rgba(142, 115, 97, 0.08);
+        }
+
+        @keyframes slideDownFade {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .receipt-box h3 {
+            text-align: center;
+            margin-top: 0;
+            color: #8e7361;
+            border-bottom: 2px solid #e8dfd8;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1em;
+            color: #7a6e65;
+        }
+
+        .receipt-row.total-row {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: #4a403a;
+            border-top: 2px dashed #e8dfd8;
+            padding-top: 18px;
+            margin-top: 15px;
+        }
+
+        .value-text {
+            color: #4a403a;
+            font-weight: 600; /* Values highlighted */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-card">
+        <h2>Billing Calculator</h2>
+        
+        <div class="input-group">
+            <label>Customer Name</label>
+            <input type="text" id="cName" placeholder="Enter customer name">
+        </div>
+        
+        <div class="input-group">
+            <label>Product Name</label>
+            <input type="text" id="pName" placeholder="e.g., Lavender Soy Wax Candle">
+        </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <div class="input-group" style="flex: 1;">
+                <label>Quantity</label>
+                <input type="number" id="qty" placeholder="0" min="1">
+            </div>
+            
+            <div class="input-group" style="flex: 1;">
+                <label>Price (₹)</label>
+                <input type="number" id="price" placeholder="0.00" min="1">
+            </div>
+        </div>
+
+        <button class="btn-generate" onclick="generateBill()">Generate Bill</button>
+
+        <div id="receiptOutput" class="receipt-box"></div>
+    </div>
+
+    <script>
+        function generateBill() {
+            const GST = 0.18;
+
+            let customerName = document.getElementById("cName").value;
+            let productName = document.getElementById("pName").value;
+            let quantity = Number(document.getElementById("qty").value);
+            let price = Number(document.getElementById("price").value);
+
+            if (!customerName || !productName || quantity <= 0 || price <= 0) {
+                alert("Please fill all details correctly before generating the bill!");
+                return;
+            }
+
+            let total = quantity * price;
+            let gstAmount = total * GST;
+            let finalBill = total + gstAmount;
+
+            const bill = {
+                customer: customerName,
+                product: productName,
+                quantity,
+                price,
+                total,
+                gstAmount,
+                finalBill
+            };
+
+            const {
+                customer,
+                product,
+                gstAmount: gst,
+                finalBill: amount
+            } = bill;
+
+            const receiptContent = `
+                <h3>Final Receipt</h3>
+                <div class="receipt-row"><span>Customer:</span> <span class="value-text">${customer}</span></div>
+                <div class="receipt-row"><span>Product:</span> <span class="value-text">${product}</span></div>
+                <div class="receipt-row"><span>Qty:</span> <span class="value-text">${quantity}</span></div>
+                <div class="receipt-row"><span>Price/Item:</span> <span class="value-text">₹${price.toFixed(2)}</span></div>
+                <div class="receipt-row"><span>Subtotal:</span> <span class="value-text">₹${total.toFixed(2)}</span></div>
+                <div class="receipt-row"><span>GST (18%):</span> <span class="value-text">₹${gst.toFixed(2)}</span></div>
+                <div class="receipt-row total-row"><span>Total Amount:</span> <span style="color: #a37968;">₹${amount.toFixed(2)}</span></div>
+            `;
+
+            const receiptDiv = document.getElementById("receiptOutput");
+            
+            receiptDiv.style.display = "none";
+            setTimeout(() => {
+                receiptDiv.innerHTML = receiptContent;
+                receiptDiv.style.display = "block";
+            }, 50);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Workspace | Storage API</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500&display=swap');
+
+        /* CSS VARIABLES FOR THEMING */
+        :root {
+            /* Default 'Oatmilk' Theme */
+            --bg-color: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --text-main: #4A4A4A;
+            --text-muted: #8C8C8C;
+            --border-color: #EAE6DF;
+            --accent: #D49A89;
+        }
+
+        /* 'Matcha' Theme (Sage Green) */
+        [data-theme="matcha"] {
+            --bg-color: #F4F6F4;
+            --card-bg: #FAFCFA;
+            --text-main: #2C3E35;
+            --text-muted: #6B8072;
+            --border-color: #D3DDD5;
+            --accent: #8BA888;
+        }
+
+        /* 'Midnight' Theme (Dark Mode) */
+        [data-theme="midnight"] {
+            --bg-color: #1A1A1A;
+            --card-bg: #242424;
+            --text-main: #FDFBF7;
+            --text-muted: #A3A3A3;
+            --border-color: #333333;
+            --accent: #C2C0BA;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .workspace-card {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+            padding: 50px;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h2 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        /* Theme Buttons */
+        .theme-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-theme {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-main);
+        }
+
+        .btn-theme:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-theme.active {
+            background-color: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+        }
+
+        /* Input Field */
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            color: var(--text-main);
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.02);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* Storage Status Badge */
+        .status-badge {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .btn-clear {
+            margin-top: 15px;
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="workspace-card">
+        <div class="header">
+            <h2>Aura Workspace</h2>
+            <p>Experiment 9: Web Storage API</p>
+        </div>
+
+        <!-- LOCAL STORAGE SECTION -->
+        <div class="section">
+            <div class="section-title">1. Workspace Aesthetic (localStorage)</div>
+            <div class="theme-options">
+                <button class="btn-theme" onclick="setTheme('oatmilk')" id="btn-oatmilk">Oatmilk (Default)</button>
+                <button class="btn-theme" onclick="setTheme('matcha')" id="btn-matcha">Matcha (Sage)</button>
+                <button class="btn-theme" onclick="setTheme('midnight')" id="btn-midnight">Midnight (Dark)</button>
+            </div>
+            <div class="status-badge">Theme preference persists even if you close the browser.</div>
+        </div>
+
+        <!-- SESSION STORAGE SECTION -->
+        <div class="section">
+            <div class="section-title">2. Current Session Focus (sessionStorage)</div>
+            <input type="text" id="sessionFocus" placeholder="What is your main goal for this session?">
+            <div class="status-badge">This data is cleared when you close this specific browser tab.</div>
+            <br>
+            <button class="btn-clear" onclick="clearSession()">Clear Session Data</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. LOCAL STORAGE: Theme Management
+        // ==========================================
+        
+        // Function to apply and save theme
+        function setTheme(themeName) {
+            // Apply theme to the HTML body using data attribute
+            document.documentElement.setAttribute('data-theme', themeName);
+            
+            // Save preference to localStorage
+            localStorage.setItem('preferredTheme', themeName);
+
+            // Update active button styling
+            document.querySelectorAll('.btn-theme').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${themeName}`).classList.add('active');
+        }
+
+        // On Page Load: Retrieve and apply saved theme
+        function loadTheme() {
+            // Get saved theme from localStorage, default to 'oatmilk' if null
+            const savedTheme = localStorage.getItem('preferredTheme') || 'oatmilk';
+            setTheme(savedTheme);
+        }
+
+
+        // ==========================================
+        // 2. SESSION STORAGE: Session Focus
+        // ==========================================
+        
+        const focusInput = document.getElementById('sessionFocus');
+
+        // Save data to sessionStorage every time user types
+        focusInput.addEventListener('input', function() {
+            sessionStorage.setItem('currentFocus', this.value);
+        });
+
+        // On Page Load: Retrieve saved session focus
+        function loadSessionFocus() {
+            const savedFocus = sessionStorage.getItem('currentFocus');
+            if (savedFocus) {
+                focusInput.value = savedFocus;
+            }
+        }
+
+        // Function to clear session storage manually
+        function clearSession() {
+            sessionStorage.removeItem('currentFocus');
+            focusInput.value = '';
+            alert("Session focus cleared!");
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        // Run load functions when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadSessionFocus();
+        });
+    </script>
+</body>
+</html>

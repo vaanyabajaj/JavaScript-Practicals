@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Wellness | Live Admission</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500&display=swap');
+
+        /* AESTHETIC MINIMALIST LIGHT THEME */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #FDFBF7; /* Warm off-white/cream */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 50px 20px;
+            box-sizing: border-box;
+            color: #4A4A4A;
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 800px;
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03), 0 5px 15px rgba(0,0,0,0.02);
+            padding: 50px 55px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.4em;
+            color: #2C3E35; /* Deep forest/sage green */
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9em;
+            color: #8C8C8C;
+            margin-top: 8px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Soft CSS Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px 30px;
+        }
+
+        .form-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        .form-group label {
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #6B6B6B;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Elegant Inputs */
+        input[type="text"], input[type="number"], input[type="email"], select {
+            width: 100%;
+            padding: 14px 45px 14px 18px;
+            background: #F9F8F5; /* Soft beige */
+            border: 1px solid #EAE6DF;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+            color: #2C3E35;
+            font-weight: 400;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #C2C0BA;
+            font-weight: 300;
+        }
+
+        input:focus, select:focus {
+            background: #FFFFFF;
+            border-color: #2C3E35;
+            box-shadow: 0 4px 15px rgba(44, 62, 53, 0.05);
+        }
+
+        /* AESTHETIC LIVE VALIDATION STYLES */
+        input.is-valid, select.is-valid {
+            border-color: #8BA888; /* Soft Sage Green */
+            background: #FAFCFA;
+        }
+
+        input.is-invalid, select.is-invalid {
+            border-color: #D49A89; /* Soft Terracotta / Blush */
+            background: #FEFCFB;
+        }
+
+        .status-icon {
+            position: absolute;
+            right: 18px;
+            font-size: 1.1em;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: scale(0.5);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .status-icon.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .icon-valid { color: #8BA888; }
+        .icon-invalid { color: #D49A89; }
+
+        .error-msg {
+            display: block;
+            font-size: 0.75em;
+            color: #D49A89;
+            margin-top: 6px;
+            min-height: 18px;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* Minimalist Button */
+        .btn-submit {
+            width: 100%;
+            background: #2C3E35;
+            color: #FFFFFF;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-submit:hover {
+            background: #3A4F44;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(44, 62, 53, 0.15);
+        }
+
+        #finalAlert {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #FAFCFA;
+            border: 1px solid #8BA888;
+            color: #2C3E35;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 400;
+            font-size: 1em;
+            font-family: 'Playfair Display', serif;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-card { padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <div class="header">
+            <h2 class="header-title">Aura Wellness Studio</h2>
+            <div class="header-subtitle">Curated Fitness Experience</div>
+        </div>
+
+        <form id="gymForm">
+            <div class="form-grid">
+                
+                <!-- 1. Full Name -->
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                        <span class="status-icon" id="nameIcon"></span>
+                    </div>
+                    <span class="error-msg" id="nameErr"></span>
+                </div>
+
+                <!-- 2. Email -->
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" placeholder="hello@example.com">
+                        <span class="status-icon" id="emailIcon"></span>
+                    </div>
+                    <span class="error-msg" id="emailErr"></span>
+                </div>
+
+                <!-- 3. Age -->
+                <div class="form-group">
+                    <label>Age (16+)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="age" placeholder="Your age">
+                        <span class="status-icon" id="ageIcon"></span>
+                    </div>
+                    <span class="error-msg" id="ageErr"></span>
+                </div>
+
+                <!-- 4. Mobile Number -->
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="phone" placeholder="10-digit number" maxlength="10">
+                        <span class="status-icon" id="phoneIcon"></span>
+                    </div>
+                    <span class="error-msg" id="phoneErr"></span>
+                </div>
+
+                <!-- 5. Emergency Contact -->
+                <div class="form-group">
+                    <label>Emergency Contact</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="emergency" placeholder="Alternative 10-digit number" maxlength="10">
+                        <span class="status-icon" id="emergencyIcon"></span>
+                    </div>
+                    <span class="error-msg" id="emergencyErr"></span>
+                </div>
+
+                <!-- 6. Branch Selection -->
+                <div class="form-group">
+                    <label>Studio Location</label>
+                    <div class="input-wrapper">
+                        <select id="branch">
+                            <option value="">-- Select Studio --</option>
+                            <option value="sitabuldi">Sitabuldi Central Studio</option>
+                            <option value="dharampeth">Dharampeth Elite Studio</option>
+                            <option value="wardhaman">Wardhaman Wellness Space</option>
+                        </select>
+                        <span class="status-icon" id="branchIcon"></span>
+                    </div>
+                    <span class="error-msg" id="branchErr"></span>
+                </div>
+
+                <!-- 7. Fitness Goal -->
+                <div class="form-group">
+                    <label>Primary Focus</label>
+                    <div class="input-wrapper">
+                        <select id="goal">
+                            <option value="">-- Select Focus --</option>
+                            <option value="pilates">Pilates & Core</option>
+                            <option value="strength">Strength & Conditioning</option>
+                            <option value="yoga">Yoga & Mindfulness</option>
+                        </select>
+                        <span class="status-icon" id="goalIcon"></span>
+                    </div>
+                    <span class="error-msg" id="goalErr"></span>
+                </div>
+
+                <!-- 8. Membership Plan -->
+                <div class="form-group">
+                    <label>Membership Tier</label>
+                    <div class="input-wrapper">
+                        <select id="plan">
+                            <option value="">-- Select Tier --</option>
+                            <option value="1">Base Experience (1 Month) - ₹12,000</option>
+                            <option value="3">Holistic Journey (3 Months) - ₹32,000</option>
+                            <option value="12">Signature Elite (12 Months) - ₹95,000</option>
+                        </select>
+                        <span class="status-icon" id="planIcon"></span>
+                    </div>
+                    <span class="error-msg" id="planErr"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group full-width">
+                    <button type="submit" class="btn-submit" id="submitBtn">Begin Your Journey</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="finalAlert">Your profile is validated. Welcome to the Aura experience.</div>
+    </div>
+
+    <script>
+        const fields = ['fullName', 'email', 'age', 'phone', 'emergency', 'branch', 'goal', 'plan'];
+        const els = {};
+        const errs = {};
+        const icons = {};
+
+        fields.forEach(f => {
+            els[f] = document.getElementById(f);
+            errs[f] = document.getElementById(f + 'Err');
+            icons[f] = document.getElementById(f + 'Icon');
+        });
+
+        const gymForm = document.getElementById('gymForm');
+        let isValid = { fullName: false, email: false, age: false, phone: false, emergency: false, branch: false, goal: false, plan: false };
+
+        function setStatus(key, message, validStatus) {
+            isValid[key] = validStatus;
+            icons[key].classList.add('show');
+
+            if (validStatus) {
+                els[key].classList.remove('is-invalid');
+                els[key].classList.add('is-valid');
+                errs[key].innerText = '';
+                icons[key].innerHTML = '✓';
+                icons[key].className = 'status-icon show icon-valid';
+            } else {
+                els[key].classList.remove('is-valid');
+                els[key].classList.add('is-invalid');
+                errs[key].innerText = message;
+                icons[key].innerHTML = '✕';
+                icons[key].className = 'status-icon show icon-invalid';
+            }
+        }
+
+        els.fullName.addEventListener('input', () => {
+            const val = els.fullName.value.trim();
+            if (val.length === 0) setStatus('fullName', "Please provide your name.", false);
+            else if (!/^[A-Za-z\s]+$/.test(val)) setStatus('fullName', "Letters and spaces only, please.", false);
+            else setStatus('fullName', "", true);
+        });
+
+        els.email.addEventListener('input', () => {
+            const val = els.email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (val.length === 0) setStatus('email', "Email address is required.", false);
+            else if (!emailRegex.test(val)) setStatus('email', "Please enter a valid email format.", false);
+            else setStatus('email', "", true);
+        });
+
+        els.age.addEventListener('input', () => {
+            const val = parseInt(els.age.value);
+            if (!els.age.value || isNaN(val)) setStatus('age', "Age is required.", false);
+            else if (val < 16) setStatus('age', "You must be at least 16 to join.", false);
+            else if (val > 100) setStatus('age', "Please enter a valid age.", false);
+            else setStatus('age', "", true);
+        });
+
+        els.phone.addEventListener('input', () => {
+            els.phone.value = els.phone.value.replace(/\D/g, ''); 
+            const val = els.phone.value;
+            if (val.length === 0) setStatus('phone', "Mobile number is required.", false);
+            else if (val.length !== 10) setStatus('phone', "Exactly 10 digits required.", false);
+            else {
+                setStatus('phone', "", true);
+                if(els.emergency.value.length > 0) els.emergency.dispatchEvent(new Event('input'));
+            }
+        });
+
+        els.emergency.addEventListener('input', () => {
+            els.emergency.value = els.emergency.value.replace(/\D/g, ''); 
+            const val = els.emergency.value;
+            if (val.length === 0) setStatus('emergency', "Emergency contact is required.", false);
+            else if (val.length !== 10) setStatus('emergency', "Exactly 10 digits required.", false);
+            else if (val === els.phone.value) setStatus('emergency', "Must be different from your mobile.", false);
+            else setStatus('emergency', "", true);
+        });
+
+        ['branch', 'goal', 'plan'].forEach(dropdown => {
+            els[dropdown].addEventListener('change', () => {
+                if (els[dropdown].value === "") setStatus(dropdown, "Please make a selection.", false);
+                else setStatus(dropdown, "", true);
+            });
+        });
+
+        gymForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const allValid = Object.values(isValid).every(status => status === true);
+
+            if (allValid) {
+                document.getElementById('finalAlert').style.display = 'block';
+                const btn = document.getElementById('submitBtn');
+                btn.style.display = 'none'; 
+            } else {
+                ['fullName', 'email', 'age', 'phone', 'emergency'].forEach(f => els[f].dispatchEvent(new Event('input')));
+                ['branch', 'goal', 'plan'].forEach(f => els[f].dispatchEvent(new Event('change')));
+            }
+        });
+    </script>
+</body>
+</html>

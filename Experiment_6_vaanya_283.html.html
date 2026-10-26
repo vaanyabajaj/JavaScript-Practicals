@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String & Regex Engine</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        /* PRINT-FRIENDLY LIGHT THEME */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f4f6f8; /* Very light grey to contrast with the white container */
+            color: #1c1e21; /* Dark grey, almost black for high contrast */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .engine-container {
+            width: 100%;
+            max-width: 850px;
+            background: #ffffff; /* Pure white for printing */
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Very subtle shadow */
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            border-bottom: 2px solid #e9ecef;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #0b5ed7; /* Professional Blue */
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            margin: 8px 0 0 0;
+            font-size: 0.95em;
+            color: #6c757d;
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 30px;
+        }
+
+        .section-box {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .section-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            font-size: 0.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Inputs */
+        label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #343a40;
+            margin-top: 10px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            color: #212529;
+            font-size: 1em;
+            font-family: 'JetBrains Mono', monospace;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #86b7fe;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn-run {
+            background-color: #0d6efd;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-run:hover {
+            background-color: #0b5ed7;
+        }
+
+        /* Dynamic Output Displays */
+        .status-alert {
+            display: none;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            border-left: 4px solid;
+        }
+
+        .status-success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border-color: #198754;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #842029;
+            border-color: #dc3545;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 15px 20px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-size: 1.5em;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        .data-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            margin-top: 15px;
+            color: #212529;
+            word-break: break-all;
+            display: none;
+        }
+        
+        .data-label {
+            font-size: 0.8em;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="engine-container">
+        <div class="header">
+            <h2>Regex & String Engine</h2>
+            <p>Practical 06: Pattern Matching, Validation & Data Extraction</p>
+        </div>
+
+        <div class="content">
+            
+            <!-- SECTION 1: EMAIL VALIDATION -->
+            <div class="section-box">
+                <div class="section-badge">Part 1: Regex Validation</div>
+                <label>Test Email Pattern Match:</label>
+                <input type="text" id="emailInput" placeholder="e.g., student@university.edu">
+                <button class="btn-run" onclick="validateEmail()">Run regex.test()</button>
+                
+                <div id="emailAlert" class="status-alert"></div>
+            </div>
+
+            <!-- SECTION 2: TEXT ANALYSIS -->
+            <div class="section-box">
+                <div class="section-badge">Part 2: String Analysis</div>
+                <label>Input Raw Text Payload (include numbers):</label>
+                <textarea id="textInput" placeholder="Server 192 down. Error code 404 detected at 15:30 hrs."></textarea>
+                <button class="btn-run" onclick="analyzeText()">Execute string.match()</button>
+                
+                <!-- Output Grid -->
+                <div id="statsArea" class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Characters</span>
+                        <span class="stat-val" id="charCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Words</span>
+                        <span class="stat-val" id="wordCount">0</span>
+                    </div>
+                </div>
+
+                <!-- Extracted Data -->
+                <div id="extractedData" class="data-box">
+                    <span class="data-label">REGEX EXTRACTED NUMBERS (\d+):</span>
+                    <span id="numOutput" style="color: #d63384; font-weight: 600;"></span>
+                </div>
+                
+                <div id="upperData" class="data-box">
+                    <span class="data-label">STRING TRANSFORMED (toUpperCase):</span>
+                    <span id="upperOutput" style="color: #198754; font-weight: 600;"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // =========================================
+        // PART 1: REGEX EMAIL VALIDATION
+        // =========================================
+        function validateEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            const alertBox = document.getElementById('emailAlert');
+            
+            // Standard Regex Pattern for Email
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+            alertBox.style.display = 'block';
+
+            if (email === "") {
+                alertBox.innerHTML = `[ERROR] Input field is empty.`;
+                alertBox.className = "status-alert status-error";
+                return;
+            }
+
+            // Using regex.test()
+            if (emailRegex.test(email)) {
+                alertBox.innerHTML = `[MATCH] Valid Email Syntax.`;
+                alertBox.className = "status-alert status-success";
+            } else {
+                alertBox.innerHTML = `[FAIL] Invalid Email Pattern.`;
+                alertBox.className = "status-alert status-error";
+            }
+        }
+
+        // =========================================
+        // PART 2: TEXT ANALYSIS & STRING FUNCTIONS
+        // =========================================
+        function analyzeText() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                alert("Please provide text data for analysis.");
+                return;
+            }
+
+            // 1. Basic String Properties & Methods
+            const charCount = text.length;
+            const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+            const upperText = text.toUpperCase();
+
+            // 2. Regex Extraction Logic
+            const numberRegex = /\d+/g; // \d+ matches digits, 'g' flag searches globally
+            const extractedNumbers = text.match(numberRegex); 
+
+            // --- Update UI ---
+            document.getElementById('statsArea').style.display = 'grid';
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('wordCount').textContent = wordCount;
+
+            // Render Extracted Numbers
+            const extBox = document.getElementById('extractedData');
+            extBox.style.display = 'block';
+            if (extractedNumbers) {
+                document.getElementById('numOutput').textContent = `[ ${extractedNumbers.join(', ')} ]`;
+            } else {
+                document.getElementById('numOutput').textContent = "No numeric data found.";
+            }
+
+            // Render Uppercase Text
+            const upperBox = document.getElementById('upperData');
+            upperBox.style.display = 'block';
+            document.getElementById('upperOutput').textContent = upperText;
+        }
+    </script>
+</body>
+</html>

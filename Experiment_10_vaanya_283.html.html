@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Data | JSON Fetcher</title>
+    <!-- Include jQuery via CDN for $.getJSON() -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap');
+
+        /* AESTHETIC MINIMALIST THEME */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #FDFBF7; /* Warm off-white */
+            color: #4A4A4A;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 50px 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03), 0 5px 15px rgba(0,0,0,0.02);
+            padding: 40px 50px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.2em;
+            color: #2C3E35; /* Deep Sage Green */
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            font-size: 0.9em;
+            color: #8C8C8C;
+            margin-top: 8px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Action Buttons */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-fetch {
+            background: #FFFFFF;
+            color: #2C3E35;
+            border: 1px solid #2C3E35;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-fetch:hover {
+            background: #2C3E35;
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px rgba(44, 62, 53, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Status Indicator */
+        .status {
+            text-align: center;
+            font-size: 0.85em;
+            color: #D49A89; /* Soft Terracotta */
+            font-style: italic;
+            margin-bottom: 20px;
+            min-height: 20px;
+        }
+
+        /* Elegant Table Design */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            background: #FAFCFA;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #EAE6DF;
+        }
+
+        thead {
+            background-color: #2C3E35;
+            color: #FFFFFF;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #EAE6DF;
+        }
+
+        th {
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #F1F4F1; /* Extremely soft sage */
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #C2C0BA;
+            font-weight: 300;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2 class="header-title">Aura Data Directory</h2>
+            <div class="header-subtitle">Experiment 10: JSON Fetching & Rendering</div>
+        </div>
+
+        <div class="controls">
+            <!-- Button 1: Vanilla JS Fetch -->
+            <button class="btn-fetch" onclick="loadWithFetch()">Load via fetch()</button>
+            
+            <!-- Button 2: jQuery $.getJSON -->
+            <button class="btn-fetch" onclick="loadWithJQuery()">Load via $.getJSON()</button>
+            
+            <!-- Clear Button -->
+            <button class="btn-fetch" style="border-color: #D49A89; color: #D49A89;" onclick="clearTable()">Clear Data</button>
+        </div>
+
+        <div class="status" id="statusMessage">Awaiting data request...</div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="4" class="empty-state">No data loaded. Click a button above to fetch JSON.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // API Endpoint (Free Fake REST API for testing)
+        const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+        const tableBody = document.getElementById('tableBody');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // ==========================================
+        // METHOD 1: Vanilla JavaScript fetch()
+        // ==========================================
+        function loadWithFetch() {
+            statusMessage.style.color = '#8BA888';
+            statusMessage.innerText = 'Fetching data using Vanilla JS fetch()...';
+            
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json(); // Parse JSON
+                })
+                .then(data => {
+                    renderTable(data);
+                    statusMessage.innerText = '✅ Data successfully loaded via fetch().';
+                })
+                .catch(error => {
+                    statusMessage.style.color = '#D49A89';
+                    statusMessage.innerText = 'Error fetching data: ' + error.message;
+                });
+        }
+
+        // ==========================================
+        // METHOD 2: jQuery $.getJSON()
+        // ==========================================
+        function loadWithJQuery() {
+            statusMessage.style.color = '#8BA888';
+            statusMessage.innerText = 'Fetching data using jQuery $.getJSON()...';
+            
+            $.getJSON(apiUrl)
+                .done(function(data) {
+                    renderTable(data);
+                    statusMessage.innerText = '✅ Data successfully loaded via $.getJSON().';
+                })
+                .fail(function(jqxhr, textStatus, error) {
+                    statusMessage.style.color = '#D49A89';
+                    statusMessage.innerText = 'Error fetching data: ' + textStatus + ", " + error;
+                });
+        }
+
+        // ==========================================
+        // RENDER FUNCTION (DOM Manipulation)
+        // ==========================================
+        function renderTable(users) {
+            // Clear existing table content
+            tableBody.innerHTML = '';
+
+            // Slice array to show only top 5 results for clean aesthetic
+            const topUsers = users.slice(0, 5);
+
+            topUsers.forEach(user => {
+                // Create a row dynamically using template literals
+                const row = `
+                    <tr>
+                        <td><strong>#${user.id}</strong></td>
+                        <td>${user.name}</td>
+                        <td>${user.email.toLowerCase()}</td>
+                        <td>${user.address.city}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row; // Append row to table body
+            });
+        }
+
+        // ==========================================
+        // UTILITY: Clear Table
+        // ==========================================
+        function clearTable() {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="empty-state">Data cleared. Awaiting new request.</td>
+                </tr>
+            `;
+            statusMessage.style.color = '#D49A89';
+            statusMessage.innerText = 'Table cleared.';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment 1: Master CSS & JS Integration</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background-color: #faf9f6; /* Aesthetic soft beige background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Horizontal Alignment using Flexbox */
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-left: 5px solid #d4c4b7;
+            flex: 1; /* Makes all three cards take equal horizontal space */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #4a4a4a;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: #555;
+            flex-grow: 1; /* Pushes buttons to the bottom evenly */
+        }
+
+        .section-tag {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8c7a6b;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: #8c7a6b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            width: 100%; /* Full width buttons for cleaner look in narrow cards */
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6b5a4d;
+        }
+
+        .display-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f4f1ea;
+            border: 1px solid #e0dcd3;
+            border-radius: 6px;
+            display: none; /* Initially hidden */
+            line-height: 1.5;
+            font-size: 0.9em;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1 style="color: #4a4a4a; font-size: 2.2em; margin-bottom: 5px; margin-top: 0;">Experiment No: 1</h1>
+        <p style="color: #7f8c8d; font-style: italic; margin-top: 5px;">
+            Demonstration of HTML, 3 Types of CSS, and 3 Types of JavaScript
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="section-tag">Method 1: Inline</div>
+            <h3>Inline CSS & Inline JavaScript</h3>
+            <p>These card components are using inline style and event attributes directly within the HTML tags.</p>
+            
+            <button onclick="alert('Inline JavaScript working perfectly! ✨')">
+                Trigger Inline JS
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="section-tag">Method 2: Internal</div>
+            <h3>Internal CSS & Internal JavaScript</h3>
+            <p>The styling for this section is defined within the head tag, and the data is loaded using an internal script.</p>
+            
+            <button onclick="showUserInfo()">Show User Info</button>
+            <button onclick="triggerConsoleDemo()">Run Console Methods</button>
+            
+            <div id="userInfoBox" class="display-box"></div>
+        </div>
+
+        <div class="card external-card-style">
+            <div class="section-tag">Method 3: External</div>
+            <h3>External CSS & External JavaScript</h3>
+            <p>This entire section is controlled through linked external styling (.css) and script (.js) files.</p>
+            
+            <button onclick="showWelcomeMessage()">Show Welcome Message</button>
+            
+            <div id="welcomeBox" class="display-box"></div>
+        </div>
+    </div>
+
+    <script>
+        function showUserInfo() {
+            const infoBox = document.getElementById('userInfoBox');
+            infoBox.innerHTML = `
+                <strong>Name:</strong> Gunn Fulwani <br>
+                <strong>PRN:</strong> 232 <br>
+                <strong>Course:</strong> CSE <br>
+                <strong>Institute:</strong> SIT, Nagpur
+            `;
+            infoBox.style.display = 'block';
+        }
+
+        function triggerConsoleDemo() {
+            console.log("LOG: User Info initialization triggered.");
+            console.info("INFO: Page is rendering with premium aesthetic styles.");
+            console.warn("WARN: Testing console warning capability.");
+            console.error("ERROR: Simulated lab error for demonstration purposes.");
+            alert("Console methods have been executed! Press F12 or Inspect -> Console to view them.");
+        }
+    </script>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

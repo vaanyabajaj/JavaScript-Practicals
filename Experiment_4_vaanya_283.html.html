@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic String Validator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+
+        /* SOFT BREATHING PASTEL BACKGROUND */
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Changed from center to prevent top cut-off */
+            background: linear-gradient(-45deg, #fdfbf7, #f4ebe1, #ecdcd1, #f9f3ee);
+            background-size: 400% 400%;
+            animation: softBreathe 15s ease infinite;
+            color: #4a403a;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        @keyframes softBreathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .portal-container {
+            width: 100%;
+            max-width: 850px;
+            margin-top: 20px;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #8e7361;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            color: #9a8c83;
+            font-size: 0.95em;
+            margin: 8px 0 0 0;
+            font-style: italic;
+        }
+
+        /* RESPONSIVE GRID LAYOUT */
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Added Media Query to prevent overlap on smaller screens */
+        @media (max-width: 768px) {
+            .grid-row {
+                grid-template-columns: 1fr; /* Stacks the cards vertically on small screens */
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(142, 115, 97, 0.12), 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(209, 197, 190, 0.6);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 45px rgba(142, 115, 97, 0.18);
+        }
+
+        .card h3 {
+            margin: 0 0 20px 0;
+            font-size: 1.25em;
+            color: #8e7361;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #f4ebe1;
+            padding-bottom: 12px;
+        }
+
+        .tag {
+            font-size: 0.65em;
+            background: #fdfbf7;
+            color: #b88d7c;
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid #e8dfd8;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* INPUT FIELDS */
+        label {
+            display: block;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8e7361;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: #ffffff;
+            border: 2px solid #e8dfd8;
+            border-radius: 12px;
+            color: #4a403a;
+            font-size: 1.05em;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #c29b8c;
+            box-shadow: 0 0 0 4px rgba(194, 155, 140, 0.2);
+        }
+
+        input[type="text"]::placeholder {
+            color: #c8c0ba;
+            font-weight: 400;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #b88d7c; 
+            color: white;
+            box-shadow: 0 6px 15px rgba(184, 141, 124, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #a37968;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f4ebe1;
+            color: #8e7361;
+        }
+
+        .btn-secondary:hover {
+            background: #e8dfd8;
+        }
+
+        /* ANALYTICS BOXES */
+        .stats-box {
+            background: #faf8f5;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px dashed #d1c5be;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #9a8c83;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #4a403a;
+            margin-top: 5px;
+        }
+
+        /* RESULT DISPLAYS */
+        #resultArea {
+            display: none;
+            margin-top: 22px;
+            padding: 20px;
+            border-radius: 14px;
+            font-size: 0.95em;
+        }
+
+        .res-success {
+            background: #f0f7f4;
+            border: 2px solid #a3c9b8;
+            color: #2d6a4f;
+        }
+
+        .res-fail {
+            background: #fdf2f2;
+            border: 2px solid #e8b4b8;
+            color: #9b444e;
+        }
+
+        .error-alert {
+            background: #fff9db;
+            border: 1px dashed #f59f00;
+            color: #b45309;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        <div class="header">
+            <h1>Palindrome Analyzer</h1>
+            <p>Experiment 04 — Function Types, Lexical Closures & Try-Catch Exception Handling</p>
+        </div>
+
+        <div class="grid-row">
+            <div class="card">
+                <h3>String Evaluation <span class="tag">TRY...CATCH</span></h3>
+                
+                <label>Enter Word or Phrase</label>
+                <input type="text" id="strInput" placeholder="e.g., A man, a plan, a canal: Panama">
+                
+                <div class="error-alert" id="errorBox"></div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="handleValidation()">Check Palindrome</button>
+                    <button class="btn-secondary" onclick="resetPortal()">Clear</button>
+                </div>
+
+                <div id="resultArea"></div>
+            </div>
+
+            <div class="card">
+                <h3>Live Analytics <span class="tag">CLOSURE DEMO</span></h3>
+                <p style="color: #7a6e65; font-size: 0.9em; margin-top: 0; margin-bottom: 20px; line-height: 1.5;">
+                    These statistical counters maintain their state securely using a JavaScript closure.
+                </p>
+
+                <div class="stats-box">
+                    <div class="stat-label">Total Strings Evaluated</div>
+                    <div class="stat-value" id="statTotal">0</div>
+                </div>
+
+                <div class="stats-box" style="border-color: #c29b8c;">
+                    <div class="stat-label">Palindromes Discovered</div>
+                    <div class="stat-value" id="statPalindromes" style="color: #b88d7c;">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 25px;">
+            <h3 style="margin-bottom: 15px;">JavaScript Architecture Breakdown</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; font-size: 0.9em; color: #7a6e65; line-height: 1.6;">
+                <div>
+                    <strong style="color: #8e7361; display: block; margin-bottom: 4px;">1. Function Types</strong> 
+                    Combines standard declarations with ES6 Arrow Functions.
+                </div>
+                <div>
+                    <strong style="color: #8e7361; display: block; margin-bottom: 4px;">2. Lexical Closures</strong> 
+                    <code>createAnalyticsTracker()</code> encapsulates variables in a private block scope.
+                </div>
+                <div>
+                    <strong style="color: #8e7361; display: block; margin-bottom: 4px;">3. Try-Catch Safety</strong> 
+                    Intercepts blank submissions or invalid characters dynamically.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const createAnalyticsTracker = () => {
+            let totalChecked = 0;
+            let palindromesFound = 0;
+
+            return {
+                recordCheck: (isPal) => {
+                    totalChecked++;
+                    if (isPal) palindromesFound++;
+                },
+                getStats: () => ({ total: totalChecked, found: palindromesFound }),
+                resetStats: () => {
+                    totalChecked = 0;
+                    palindromesFound = 0;
+                }
+            };
+        };
+
+        const analytics = createAnalyticsTracker();
+
+        const cleanAndReverse = (str) => {
+            const cleaned = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const reversed = cleaned.split('').reverse().join('');
+            return { cleaned, reversed };
+        };
+
+        function handleValidation() {
+            const inputField = document.getElementById('strInput');
+            const errorBox = document.getElementById('errorBox');
+            const resultArea = document.getElementById('resultArea');
+
+            errorBox.style.display = 'none';
+            resultArea.style.display = 'none';
+
+            try {
+                const rawText = inputField.value;
+
+                if (!rawText || rawText.trim() === '') {
+                    throw new Error("Input string cannot be blank!");
+                }
+
+                const { cleaned, reversed } = cleanAndReverse(rawText);
+
+                if (cleaned.length === 0) {
+                    throw new Error("Input must contain at least one alphabet or digit.");
+                }
+
+                const isPalindrome = (cleaned === reversed);
+
+                analytics.recordCheck(isPalindrome);
+                updateAnalyticsUI();
+
+                resultArea.innerHTML = `
+                    <div style="font-size: 1.15em; font-weight: 600; margin-bottom: 8px;">
+                        ${isPalindrome ? '✨ Palindrome Confirmed' : '📝 Not a Palindrome'}
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">
+                        <strong>Formatted:</strong> "${cleaned}" <br>
+                        <strong>Reversed:</strong> "${reversed}"
+                    </div>
+                `;
+                resultArea.className = isPalindrome ? 'res-success' : 'res-fail';
+                resultArea.style.display = 'block';
+
+            } catch (error) {
+                errorBox.innerHTML = `<strong>⚠️ Notice:</strong> ${error.message}`;
+                errorBox.style.display = 'block';
+            }
+        }
+
+        function updateAnalyticsUI() {
+            const currentStats = analytics.getStats();
+            document.getElementById('statTotal').innerText = currentStats.total;
+            document.getElementById('statPalindromes').innerText = currentStats.found;
+        }
+
+        function resetPortal() {
+            document.getElementById('strInput').value = '';
+            document.getElementById('errorBox').style.display = 'none';
+            document.getElementById('resultArea').style.display = 'none';
+            
+            analytics.resetStats();
+            updateAnalyticsUI();
+        }
+    </script>
+</body>
+</html>
